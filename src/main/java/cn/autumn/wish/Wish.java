@@ -2,6 +2,7 @@ package cn.autumn.wish;
 
 import ch.qos.logback.classic.Logger;
 import cn.autumn.wish.config.ConfigContainer;
+import cn.autumn.wish.util.Language;
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
@@ -19,12 +20,18 @@ public class Wish {
 
     private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(Wish.class);
 
+    public static Language language;
+
     private static LineReader consoleLineReader = null;
 
     public static ConfigContainer config;
 
     public static Logger getLogger() {
         return LOGGER;
+    }
+
+    public static Language getLanguage() {
+        return language;
     }
 
     public static LineReader createConsole() {
@@ -90,7 +97,7 @@ public class Wish {
     }
 
     public enum DebugMode {
-        ALL,NONE
+        ALL, NONE, MISSING
     }
 
 }

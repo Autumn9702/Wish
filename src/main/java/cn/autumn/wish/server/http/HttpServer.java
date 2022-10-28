@@ -1,8 +1,11 @@
 package cn.autumn.wish.server.http;
 
 import cn.autumn.wish.Wish;
+import cn.autumn.wish.util.FileUtil;
 import express.Express;
+import express.http.MediaType;
 import io.javalin.Javalin;
+import nonapi.io.github.classgraph.utils.FileUtils;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
@@ -11,6 +14,7 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 
 import static cn.autumn.wish.config.Configuration.*;
+import static cn.autumn.wish.util.Language.translate;
 
 /**
  * @author cf
@@ -154,9 +158,46 @@ public final class HttpServer {
                                 </head>
                                 <body>%s</body>
                             </html>
-                            """.for
+                            """.formatted(translate("messages.status.welcome"));
+                } else {
+                    final var filePath = file.getPath();
+                    final MediaType fromExtension = MediaType.getByExtension(filePath.substring(filePath.lastIndexOf(".") +1));
+                    response.type((fromExtension != null) ? fromExtension.getMIME() : "text/plain").send(FileUtil.read(filePath));
                 }
             });
+        }
+    }
+
+    /**
+     * Handles unhandled endpoints on the Express application.
+     */
+    public static class UnHandleRequestRouter implements Router {
+
+        @Override
+        public void applyRouter(Express express, Javalin handle) {
+            handle.error(404, context -> {Grasscutter.getLogger().info(translate("messages.dispatch.unhandled_request_error", context.method(), context.url()));
+                context.contentType("text/html");
+
+                File file = new File(HTTP_STATIC_FILES.errorFile);
+                if (!file.exists())
+                    context.result("""
+                        <!DOCTYPE html>
+                        <html>
+                            <head>
+                                <meta charset="utf8">
+                            </head>
+
+                            <body>
+                                <img src="https://http.cat/404" />
+                            </body>
+                        </html>
+                        """);
+                else {
+                    final var filePath = file.getPath();
+                    final MediaType fromExtension = MediaType.getByExtension(filePath.substring(filePath.lastIndexOf(".") + 1));
+                    context.contentType((fromExtension != null) ? fromExtension.getMIME() : "text/plain")
+                            .result(FileUtils.read(filePath));
+                }
         }
     }
 }
