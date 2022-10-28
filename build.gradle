@@ -1,0 +1,94 @@
+import java.nio.charset.StandardCharsets
+
+buildscript {
+
+    ext {
+
+    }
+
+    repositories {
+        mavenLocal()
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        maven { url 'https://repo.spring.io/milestone' }
+        maven { url 'https://repo.spring.io/snapshot' }
+        gradlePluginPortal()
+        mavenCentral()
+    }
+    dependencies {
+    }
+}
+
+plugins {
+
+    id 'application'
+
+    id 'java'
+
+    id 'idea'
+
+}
+
+group = 'cn.autumn'
+version = '0.0.1-V'
+
+compileJava.options.encoding = StandardCharsets.UTF_8
+compileTestJava.options.encoding = StandardCharsets.UTF_8
+
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+repositories {
+    mavenCentral()
+    maven { url 'https://repo.spring.io/milestone' }
+}
+
+dependencies {
+
+    implementation fileTree(dir: 'lib', includes: ['*.jar'])
+
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.36'
+    implementation group: 'ch.qos.logback', name: 'logback-core', version: '1.2.11'
+    implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.11'
+
+    implementation group: 'com.google.code.gson', name: 'gson', version: '2.9.0'
+    implementation group: 'com.google.protobuf', name: 'protobuf-java', version: '3.18.2'
+
+    implementation group: 'org.jline', name: 'jline', version: '3.21.0'
+
+    implementation group: 'dev.morphia.morphia', name: 'morphia-core', version: '2.2.7'
+
+}
+
+application {
+    getMainClass().set('cn.autumn.wish')
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class' : 'cn.autumn.wish'
+    }
+
+    archiveName = 'wish'
+
+    if (project.hasProperty('jarFilename')) {
+        archiveFileName = "${jarFilename}.${extension}"
+    }
+
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+
+    from('src/main/java') {
+        include '*.xml'
+    }
+
+    destinationDirectory = file(".")
+}
