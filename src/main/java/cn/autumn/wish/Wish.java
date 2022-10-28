@@ -2,6 +2,7 @@ package cn.autumn.wish;
 
 import ch.qos.logback.classic.Logger;
 import cn.autumn.wish.config.ConfigContainer;
+import cn.autumn.wish.database.DatabaseManage;
 import cn.autumn.wish.util.Language;
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.LineReader;
@@ -53,6 +54,8 @@ public class Wish {
     }
 
     public static void main(String[] args) {
+
+        DatabaseManage.initialize();
 
     }
 

@@ -1,11 +1,11 @@
 package cn.autumn.wish.server.http;
 
 import cn.autumn.wish.Wish;
+import cn.autumn.wish.Wish.DebugMode;
 import cn.autumn.wish.util.FileUtil;
 import express.Express;
 import express.http.MediaType;
 import io.javalin.Javalin;
-import nonapi.io.github.classgraph.utils.FileUtils;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
@@ -158,7 +158,7 @@ public final class HttpServer {
                                 </head>
                                 <body>%s</body>
                             </html>
-                            """.formatted(translate("messages.status.welcome"));
+                            """.formatted(translate("messages.status.welcome")));
                 } else {
                     final var filePath = file.getPath();
                     final MediaType fromExtension = MediaType.getByExtension(filePath.substring(filePath.lastIndexOf(".") +1));
@@ -175,9 +175,10 @@ public final class HttpServer {
 
         @Override
         public void applyRouter(Express express, Javalin handle) {
-            handle.error(404, context -> {Grasscutter.getLogger().info(translate("messages.dispatch.unhandled_request_error", context.method(), context.url()));
+            handle.error(404, context -> {
+                if (DISPATCH_INFO.logMode == DebugMode.MISSING)
+                    Wish.getLogger().info(translate("messages.dispatch.unhandled_request_error", context.method(), context.url()));
                 context.contentType("text/html");
-
                 File file = new File(HTTP_STATIC_FILES.errorFile);
                 if (!file.exists())
                     context.result("""
@@ -196,8 +197,9 @@ public final class HttpServer {
                     final var filePath = file.getPath();
                     final MediaType fromExtension = MediaType.getByExtension(filePath.substring(filePath.lastIndexOf(".") + 1));
                     context.contentType((fromExtension != null) ? fromExtension.getMIME() : "text/plain")
-                            .result(FileUtils.read(filePath));
+                            .result(FileUtil.read(filePath));
                 }
+            });
         }
     }
 }
