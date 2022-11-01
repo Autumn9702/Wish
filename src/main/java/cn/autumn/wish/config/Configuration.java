@@ -13,7 +13,7 @@ public final class Configuration extends ConfigContainer{
     /**
      * container
      */
-
+    public static final Locale LANGUAGE = config.language.language;
     public static final Locale FALLBACK_LANGUAGE = config.language.fallback;
 
     public static final Database DATABASE = config.databaseInfo;
