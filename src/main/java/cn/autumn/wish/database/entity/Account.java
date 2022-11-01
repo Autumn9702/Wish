@@ -35,7 +35,7 @@ public class Account {
     @Setter private boolean isBanned;
     @Getter @Setter private int banStartTime;
     @Getter @Setter private int banEndTime;
-    private String banReason;
+    @Getter @Setter private String banReason;
 
     @Getter private List<String> permissions;
     @Getter @Setter private Locale locale;

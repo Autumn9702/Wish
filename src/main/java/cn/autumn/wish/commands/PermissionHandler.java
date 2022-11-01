@@ -1,4 +1,4 @@
-package cn.autumn.wish.commands.command;
+package cn.autumn.wish.commands;
 
 /**
  * @author cf
@@ -6,6 +6,6 @@ package cn.autumn.wish.commands.command;
  */
 public interface PermissionHandler {
 
-    boolean EnablePermissionHandler();
+    boolean enablePermissionHandleer();
 
 }

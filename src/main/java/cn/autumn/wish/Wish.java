@@ -3,6 +3,9 @@ package cn.autumn.wish;
 import ch.qos.logback.classic.Logger;
 import cn.autumn.wish.config.ConfigContainer;
 import cn.autumn.wish.database.DatabaseManage;
+import cn.autumn.wish.server.http.HttpServer;
+import cn.autumn.wish.server.http.handlers.AccountHandler;
+import cn.autumn.wish.util.JsonUtil;
 import cn.autumn.wish.util.Language;
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.LineReader;
@@ -12,6 +15,7 @@ import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOError;
 import java.io.IOException;
 
@@ -20,6 +24,10 @@ import static cn.autumn.wish.config.Configuration.SERVER;
 public class Wish {
 
     private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(Wish.class);
+
+    private static final File CONFIG_FILE = new File("./config.json");
+
+    private static HttpServer httpServer;
 
     public static Language language;
 
@@ -33,6 +41,13 @@ public class Wish {
 
     public static Language getLanguage() {
         return language;
+    }
+
+    static {
+
+        Wish.loadConfig();
+
+
     }
 
     public static LineReader createConsole() {
@@ -53,13 +68,21 @@ public class Wish {
         return null;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
         DatabaseManage.initialize();
 
+        httpServer = new HttpServer();
+
+        httpServer.addRouter(AccountHandler.class);
+
+        httpServer.start();
+
+        systemStart();
+
     }
 
-    public static void loop() {
+    public static void systemStart() {
 
         //  The console does not start in dispatch mode
         if (SERVER.runMode == RunMode.DISPATCH) {
@@ -90,10 +113,25 @@ public class Wish {
 
             isLastInterrupted = false;
 
-
         }
     }
 
+    /**
+     * Load the configuration from a file.
+     */
+    public static void loadConfig() {
+        if (!CONFIG_FILE.exists()) {
+            getLogger().info("'config.json' could not be found. Generating a default configuration ...");
+            return;
+        }
+
+        try {
+            config = JsonUtil.loadToClass(CONFIG_FILE.getPath(), ConfigContainer.class);
+        } catch (Exception e) {
+            getLogger().error("There was an error while trying to load the configuration from config.json. Please make sure that there are no syntax errors. If you want to start with a default configuration, delete your existing config.json.");
+            System.exit(1);
+        }
+    }
 
     public enum RunMode {
         ALL, DISPATCH, BACKGROUND

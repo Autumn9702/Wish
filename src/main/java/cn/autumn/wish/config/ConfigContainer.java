@@ -59,7 +59,7 @@ public class ConfigContainer {
     public static class HTTP {
 
         public String bindAddress = "0.0.0.0";
-        public int bindPort = 9050;
+        public int bindPort = 9000;
 
         /* This is the address used in URLs. */
         public String accessAddress = "127.0.0.1";
@@ -77,7 +77,7 @@ public class ConfigContainer {
      */
     public static class Backstage {
         public String bindAddress = "0.0.0.0";
-        public int bindPort = 22102;
+        public int bindPort = 9050;
 
         /* This is the address used in the default region. */
         public String accessAddress = "127.0.0.1";

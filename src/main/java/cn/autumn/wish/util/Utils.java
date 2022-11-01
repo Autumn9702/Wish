@@ -46,6 +46,13 @@ public final class Utils {
         return stringBuilder.toString();
     }
 
+    /**
+     * Creates a string with the path to a file.
+     */
+    public static String filePath(String path) {
+        return path.replace("/", File.separator);
+    }
+
     private static final char[] HEX_ARRAY = "0123456789abcdef".toCharArray();
     public static String bytesToHex(byte[] bytes) {
         if (bytes == null) return "";

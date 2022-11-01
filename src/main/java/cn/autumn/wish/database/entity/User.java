@@ -18,5 +18,4 @@ public final class User {
     @Getter @Setter private String signature;
     @Getter @Setter private String headImage;
 
-
 }

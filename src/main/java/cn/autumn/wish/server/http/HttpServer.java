@@ -138,7 +138,7 @@ public final class HttpServer {
             this.express.listen(HTTP_INFO.bindPort);
         } else this.express.listen(HTTP_INFO.bindAddress, HTTP_INFO.bindPort);
         // Log bind information
-        Wish.getLogger().info("Prot bind: " + this.express.raw().port());
+        Wish.getLogger().info("Port bind: " + this.express.raw().port());
     }
 
     /**
